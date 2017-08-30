@@ -1,45 +1,47 @@
-let el = document.getElementById('submitButton');
-el.addEventListener('click', submit);
+let documentButton = document.getElementById("submitButton");
+documentButton.addEventListener('click', submit);
 window.MyForm = {};
 window.MyForm.validate = validate;
 window.MyForm.setData = setData;
 window.MyForm.getData = getData;
 window.MyForm.submit = submit;
 
-function validate() {
-    let fio = document.getElementsByName("fio")[0].value.trim();
-    let email = document.getElementsByName("email")[0].value;
-    let phone = document.getElementsByName("phone")[0].value;
+let documentFio = document.getElementById("fio");
+let documentEmail = document.getElementById("email");
+let documentPhone = document.getElementById("phone");
+let documentConteiner = document.getElementById('resultContainer');
 
+
+function validate() {
     let result = { isValid: true, errorFields: [] }
 
     let reg = /\D+/ig;
-    let digitalPhone = phone.replace(reg, '');
+    let digitalPhone = documentPhone.value.replace(reg, '');
     let sumPhone = 0;
     while (digitalPhone > 0) {
         sumPhone += digitalPhone % 10;
         digitalPhone = Math.floor(digitalPhone / 10);
     }
-    let splitFio = fio.split(' ');
+    let splitFio = documentFio.value.trim().split(' ');
     if (splitFio.length != 3) {
-        document.getElementById("fio").classList.add("error");
+        documentFio.classList.add("error");
         result.errorFields.push("fio");
         result.isValid = false;
     } else if (splitFio.length == 3) {
-        document.getElementById("fio").classList.remove("error");
+        documentFio.classList.remove("error");
     }
-    if ((/^[A-Za-z0-9](?:[A-Za-z0-9\-\._]*[A-Za-z0-9])@(ya\.ru| yandex\.ru|yandex\.ua| yandex\.by| yandex\.kz| yandex\.com)$/).test(email)) {
-        document.getElementById("email").classList.remove("error");
+    if ((/^[A-Za-z0-9](?:[A-Za-z0-9\-\._]*[A-Za-z0-9])@(ya\.ru| yandex\.ru|yandex\.ua| yandex\.by| yandex\.kz| yandex\.com)$/).test(documentEmail.value)) {
+        documentEmail.classList.remove("error");
     } else {
-        document.getElementById("email").classList.add("error");
+        documentEmail.classList.add("error");
         result.errorFields.push("email");
         result.isValid = false;
     }
-    if ((/^\+7\(\d\d\d\)\d\d\d\-\d\d\-\d\d$/).test(phone) &&
-        phone.length == 16 && sumPhone <= 30) {
-        document.getElementById("phone").classList.remove("error");
+    if ((/^\+7\(\d\d\d\)\d\d\d\-\d\d\-\d\d$/).test(documentPhone.value) &&
+        documentPhone.value.length == 16 && sumPhone <= 30) {
+        documentPhone.classList.remove("error");
     } else {
-        document.getElementById("phone").classList.add("error");
+        documentPhone.classList.add("error");
         result.errorFields.push("phone");
         result.isValid = false;
     }
@@ -48,54 +50,38 @@ function validate() {
 }
 
 function getData() {
-    let fio = document.getElementsByName("fio")[0].value;
-    let email = document.getElementsByName("email")[0].value;
-    let phone = document.getElementsByName("phone")[0].value;
-    return { fio: fio, email: email, phone: phone };
+    return { fio: documentFio.value.trim(), email: documentEmail.value, phone: documentPhone.value };
 }
 
 function setData(data) {
-    document.getElementsByName("fio")[0].value = data.fio;
-    document.getElementsByName("email")[0].value = data.email;
-    document.getElementsByName("phone")[0].value = data.phone;
+    documentFio.value = data.fio;
+    documentEmail.value = data.email;
+    documentPhone.value = data.phone;
 }
 
 function submit() {
-    //e.preventDefault();
     let validationFunction = validate();
     if (validationFunction.isValid == true) {
-        //блокировка кнопки
+        documentButton.disabled = true;
         let address = document.getElementById('myForm').action;
-        // 1. Создаём новый объект XMLHttpRequest
         var xhr = new XMLHttpRequest();
-        // 2. Конфигурируем его: GET-запрос н
         xhr.open('GET', address, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
-
-                // 3. Отсылаем запрос
-                // 4. Если код ответа сервера не 200, то это ошибка
-                if (xhr.status != 200) {
-                    // обработать ошибку
-                    // alert(xhr.status + ': ' + xhr.statusText); // пример вывода: 404: Not Found
-                } else {
-                    // вывести результат
-                    //alert(xhr.responseText); // responseText -- текст ответа.
+                if (xhr.status != 200) {} else {
                     let serverResp = JSON.parse(xhr.responseText);
                     if (serverResp.status == 'success') {
-                        document.getElementById('resultContainer').innerHTML = 'Success';
-                        document.getElementById("resultContainer").classList.add("success");
+                        documentConteiner.innerHTML = 'Success';
+                        documentConteiner.classList.add("success");
                     } else if (serverResp.status == 'progress') {
-                        document.getElementById('resultContainer').innerHTML = 'progress';
-                        document.getElementById("resultContainer").classList.add("progress");
+                        documentConteiner.innerHTML = 'progress';
+                        documentConteiner.classList.add("progress");
                         setTimeout(submit(), serverResp.timeout);
 
                     } else if (serverResp.status == 'error') {
-                        document.getElementById('resultContainer').innerHTML = serverResp.reason;
-                        document.getElementById("resultContainer").classList.add("error");
+                        documentConteiner.innerHTML = serverResp.reason;
+                        documentConteiner.classList.add("error");
                     }
-                    document.getElementById("submitButton").disabled = true;
-
                 }
             }
         }
