@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+
+    <title>Document</title>
+</head>
+
+<body>
+
+    <form id="myForm" action="error.json" onsubmit="return false;">
+        <div class="block">
+            <div>
+                <label for="name">ФИО</label>
+            </div>
+            <div>
+                <input class="standart inputS" id="fio" type="text" name="fio" />
+            </div>
+            <div>
+                <label for="email">Email</label>
+            </div>
+            <div>
+                <input class="standart inputS" id="email" type="text" name="email" />
+            </div>
+            <div>
+                <label for="phone">Телефон</label></div>
+            <div>
+                <input class="standart inputS" id="phone" maxlength="16" type="text" name="phone" />
+            </div>
+            <div>
+                <button id="submitButton" type="submit">Проверка</button>
+            </div>
+            <div id="resultContainer" class="contains"></div>
+        </div>
+    </form>
+    <script src="index.js"></script>
+</body>
+
+</html>
